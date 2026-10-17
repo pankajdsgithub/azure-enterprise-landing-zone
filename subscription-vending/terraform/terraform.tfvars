@@ -1,0 +1,5 @@
+billing_account_name       = "12345678"
+enrollment_account_name    = "87654321"
+subscription_name          = "sub-erp-prod-01"
+workload_type              = "Production"
+target_management_group_id = "/providers/Microsoft.Management/managementGroups/ent-lz-prod"
