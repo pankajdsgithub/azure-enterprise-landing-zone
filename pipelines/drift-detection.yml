@@ -1,0 +1,51 @@
+trigger: none
+
+schedules:
+  - cron: "0 6 * * 1-5" # Runs every weekday at 06:00 UTC
+    displayName: 'Daily Enterprise Drift Detection'
+    branches:
+      include:
+        - main
+    always: true
+
+jobs:
+  - job: DetectDrift
+    displayName: 'Platform Infrastructure Drift Check'
+    pool:
+      vmImage: 'ubuntu-latest'
+    strategy:
+      matrix:
+        Governance:
+          workingDirectory: 'governance/management-groups'
+        Connectivity:
+          workingDirectory: 'platform/connectivity'
+        Management:
+          workingDirectory: 'platform/management'
+        Security:
+          workingDirectory: 'platform/security'
+    steps:
+      - checkout: self
+
+      - task: AzureCLI@2
+        displayName: 'Terraform Init & Plan Check for Drift'
+        inputs:
+          azureSubscription: 'sc-azure-platform-connection'
+          scriptType: 'bash'
+          scriptLocation: 'inlineScript'
+          inlineScript: |
+            cd $(workingDirectory)
+            echo "Initializing Terraform for $(workingDirectory)..."
+            terraform init -input=false
+            
+            echo "Running plan to detect drift..."
+            terraform plan -detailed-exitcode -input=false || exit_code=$?
+            
+            if [ $exit_code -eq 2 ]; then
+              echo "##vso[task.logissue type=warning]Drift detected in $(workingDirectory)! Infrastructure does not match code state."
+              exit 2
+            elif [ $exit_code -eq 1 ]; then
+              echo "##vso[task.logissue type=error]Terraform plan failed with errors in $(workingDirectory)."
+              exit 1
+            else
+              echo "No drift detected. Infrastructure is in sync with code."
+            }
