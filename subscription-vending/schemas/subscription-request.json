@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "EnterpriseSubscriptionRequest",
+  "type": "object",
+  "properties": {
+    "applicationName": {
+      "type": "string",
+      "pattern": "^[a-z0-9]{3,15}$",
+      "description": "Short code for the application (lowercase, alphanumeric, 3-15 chars)."
+    },
+    "environment": {
+      "type": "string",
+      "enum": ["dev", "test", "uat", "staging", "prod"],
+      "description": "Target lifecycle environment."
+    },
+    "businessUnit": {
+      "type": "string",
+      "description": "Owning business unit or department."
+    },
+    "costCenter": {
+      "type": "string",
+      "pattern": "^[A-Z0-9]{5,10}$",
+      "description": "Financial cost center code for EA chargeback."
+    },
+    "technicalOwnerEmail": {
+      "type": "string",
+      "format": "email",
+      "description": "Email address of the technical lead."
+    },
+    "targetManagementGroup": {
+      "type": "string",
+      "enum": ["prod", "nonprod", "sandbox"],
+      "description": "Target management group tier."
+    }
+  },
+  "required": [
+    "applicationName",
+    "environment",
+    "businessUnit",
+    "costCenter",
+    "technicalOwnerEmail",
+    "targetManagementGroup"
+  ]
+}
