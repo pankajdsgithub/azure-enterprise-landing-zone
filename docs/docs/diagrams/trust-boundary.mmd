@@ -1,0 +1,25 @@
+graph TD
+    subgraph Internet
+        Users[External Users / Devs]
+    end
+
+    subgraph Azure_Tenant [Microsoft Entra ID Tenant]
+        subgraph AzDO [Azure DevOps Workload Identity Federation]
+            Pipeline[CI/CD Pipelines]
+        end
+
+        subgraph Platform_Subscriptions [Platform Subscriptions (Management / Connectivity)]
+            Firewall[Azure Firewall / Hub]
+            LAW[Central Log Analytics]
+        end
+
+        subgraph Workload_Subscriptions [Workload Subscriptions]
+            AppSpoke[Application Spoke VNet]
+        end
+    end
+
+    Users -->|PIM / MFA authenticated| Pipeline
+    Pipeline -->|Least-Privilege RBAC & Federated Token| Platform_Subscriptions
+    Pipeline -->|Subscription Vending API| EA[EA Billing API]
+    AppSpoke -->|UDR / Inspection| Firewall
+    Workload_Subscriptions -->|Diagnostic Logs| LAW
