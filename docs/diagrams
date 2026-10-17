@@ -1,0 +1,16 @@
+graph TD
+    Root[Tenant Root Management Group] --> Platform[Platform Management Group]
+    Root --> LandingZones[Landing Zones Management Group]
+    Root --> Sandbox[Sandbox Management Group]
+    Root --> Decomm[Decommissioned Management Group]
+
+    Platform --> Mgmt[Management Subscription]
+    Platform --> Conn[Connectivity Subscription]
+    Platform --> Ident[Identity Subscription]
+
+    LandingZones --> Prod[Production Management Group]
+    LandingZones --> NonProd[Non-Production Management Group]
+
+    Prod --> ProdSub1[Workload Prod Sub 1]
+    Prod --> ProdSub2[Workload Prod Sub 2]
+    NonProd --> NonProdSub1[Workload NonProd Sub 1]
