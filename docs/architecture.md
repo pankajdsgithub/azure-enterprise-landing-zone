@@ -72,5 +72,3 @@ graph TD
     S2 --> S3
     S3 --> S4[04-subscription-vending]
     S4 --> S5[05-workload-foundations]
-
-EOF
