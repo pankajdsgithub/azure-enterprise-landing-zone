@@ -1,0 +1,36 @@
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - bootstrap/*
+      - governance/*
+      - platform/*
+
+stages:
+  - stage: DeployGovernance
+    displayName: 'Deploy Tenant Governance'
+    jobs:
+      - template: templates/terraform-deploy.yml
+        parameters:
+          terraformWorkingDirectory: 'governance/management-groups'
+          environmentName: 'governance'
+
+  - stage: DeployConnectivity
+    displayName: 'Deploy Hub Connectivity'
+    dependsOn: DeployGovernance
+    jobs:
+      - template: templates/terraform-deploy.yml
+        parameters:
+          terraformWorkingDirectory: 'platform/connectivity'
+          environmentName: 'connectivity'
+
+  - stage: DeployManagement
+    displayName: 'Deploy Central Management & Security'
+    dependsOn: DeployConnectivity
+    jobs:
+      - template: templates/terraform-deploy.yml
+        parameters:
+          terraformWorkingDirectory: 'platform/management'
+          environmentName: 'management'

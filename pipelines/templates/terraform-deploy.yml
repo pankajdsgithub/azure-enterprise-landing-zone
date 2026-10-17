@@ -1,0 +1,48 @@
+parameters:
+  - name: terraformWorkingDirectory
+    type: string
+  - name: environmentName
+    type: string
+
+jobs:
+  - deployment: TerraformDeploy
+    displayName: 'Terraform Plan & Apply - ${{ parameters.environmentName }}'
+    pool:
+      vmImage: 'ubuntu-latest'
+    environment: '${{ parameters.environmentName }}'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - checkout: self
+
+            - task: AzureCLI@2
+              displayName: 'Terraform Init & Validate'
+              inputs:
+                azureSubscription: 'sc-azure-platform-connection'
+                scriptType: 'bash'
+                scriptLocation: 'inlineScript'
+                inlineScript: |
+                  cd ${{ parameters.terraformWorkingDirectory }}
+                  terraform init -input=false
+                  terraform validate
+
+            - task: AzureCLI@2
+              displayName: 'Terraform Plan'
+              inputs:
+                azureSubscription: 'sc-azure-platform-connection'
+                scriptType: 'bash'
+                scriptLocation: 'inlineScript'
+                inlineScript: |
+                  cd ${{ parameters.terraformWorkingDirectory }}
+                  terraform plan -input=false -out=tfplan
+
+            - task: AzureCLI@2
+              displayName: 'Terraform Apply'
+              inputs:
+                azureSubscription: 'sc-azure-platform-connection'
+                scriptType: 'bash'
+                scriptLocation: 'inlineScript'
+                inlineScript: |
+                  cd ${{ parameters.terraformWorkingDirectory }}
+                  terraform apply -input=false tfplan
