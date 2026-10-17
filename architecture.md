@@ -1,11 +1,7 @@
 # Enterprise Architecture & Design Decisions
-
 This document details the architectural topology, state dependency graphs, trust boundaries, and workflows governing the enterprise landing zone.
-
 ---
-
 ## 1. Management Group Hierarchy
-
 The Management Group structure mirrors Microsoft's enterprise guidance, enforcing security baselines and policy inheritance from the tenant root down to individual workload tiers.
 
 ```mermaid
