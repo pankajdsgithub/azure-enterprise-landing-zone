@@ -51,20 +51,6 @@ graph TD
 
 
 
-stateDiagram-v2
-[*] --> Requested
-Requested --> Validated: Schema & Policy Check
-Validated --> AwaitingApproval: Security & FinOps Review
-AwaitingApproval --> Approved: Manager Sign-off
-Approved --> CreatingSubscription: ARM Alias API Call
-CreatingSubscription --> ApplyingGovernance: MG Placement & Policies
-ApplyingGovernance --> ConfiguringPlatform: Network & Monitoring Setup
-ConfiguringPlatform --> Validating: Post-Provisioning Checks
-Validating --> Ready: Published to Application Team
-Ready --> [*]
-
-
-
 graph TD
     S0[00-bootstrap] --> S1[01-governance]
     S0 --> S2[02-connectivity]
